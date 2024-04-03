@@ -1,155 +1,56 @@
-# major_project2_nifty
+## Application of Deep Learning in Intraday Price Prediction 
+The Intraday Price Prediction system utilizes advanced deep learning techniques, specifically LSTM neural networks, to accurately forecast stock prices at 5-minute intervals. The method enhances prediction accuracy by utilizing technical indicators such as SMA and SMA10. Through meticulous data preprocessing and rigorous model training, our aim is to uncover the intricate relationships between historical stock data and indicators. Through the utilization of ensemble learning techniques and the fine-tuning of hyperparameters, the model's performance is enhanced in terms of its predictive reliability and computational efficiency. The system aims to assist investors and merchants in intraday trading decision-making by improving financial forecasting and trading procedures.
+
+### Features
+**Data Acquisition**: Collecting both historical and real-time intraday stock price data along with relevant technical indicators from reliable financial data sources and APIs.
+**Feature Engineering**: Enhancing data quality and relevance through meticulous preprocessing techniques, ensuring consistency, and accuracy in the dataset.
+**Model Development**: Designing and training Long Short-Term Memory (LSTM) neural network models to learn intricate temporal patterns and relationships in the preprocessed data for accurate stock price prediction.
+**Evaluation and Validation**: Assessing the performance of developed models using metrics such as Mean Squared Error (MSE), Root Mean Squared Error (RMSE), etc., and validating predictions against actual stock prices to ensure reliability.
+**Real-time Prediction**: Implementing mechanisms to facilitate real-time prediction of intraday stock prices, enabling timely decision-making for traders and investors.
+
+### Requirements
+- **Operating System Compatibility**: The system should be compatible with Windows, Linux, and macOS environments to ensure accessibility across different platforms.
+- **Programming Language**: Development should be conducted using Python 3.6 or later versions to leverage its extensive libraries and ecosystem.
+- **Libraries**: Required libraries include Pandas, NumPy, Scikit-learn, TensorFlow for deep learning, NLTK and TextBlob for natural language processing, as well as API libraries for accessing market data.
+- **Integrated Development Environment (IDE)**: Used   Colab Notebook for efficient development and experimentation.
+
+### Methodology 
+- **Data Collection**: Gather intraday stock price data from reliable sources, ensuring completeness and consistency for subsequent analysis and modeling.
+- **Preprocessing**: Handle missing values, outliers, and inconsistencies, and perform data normalization to prepare the dataset for further analysis.
+- **EDA**: Explore the dataset to gain insights, identify patterns, and understand the relationships between variables using statistical and visual techniques.
+- **Model Development**: Design an appropriate model architecture, such as LSTM, for intraday stock price prediction, considering features and target variable.
+- **Training and Evaluation**: Train the model using the prepared dataset, validate its performance using suitable metrics, and fine-tune parameters for optimal results.
+
+### System Architecture
+![Screenshot 2024-04-01 234627](https://github.com/curiouzs/major_project2_nifty/assets/75234646/cd929adb-95a3-4f74-9b8e-96ea3cea4524)
+
+### Flow Diagram
+![Screenshot 2024-04-03 084346](https://github.com/curiouzs/major_project2_nifty/assets/75234646/3d353c60-2163-4163-a3ca-0941894d9d25)
+
+### Output
+![Screenshot 2024-04-02 223446](https://github.com/curiouzs/major_project2_nifty/assets/75234646/12564f16-d788-4791-9011-c17088cfc11f)
+
+![Screenshot 2024-04-02 223415](https://github.com/curiouzs/major_project2_nifty/assets/75234646/4421c467-2f9c-4235-bf0c-351b12533be2)
 
 
-## python code:
+### Results and Impact
+- **Improved Prediction Accuracy**: The LSTM model significantly enhances intraday stock price predictions, providing traders with more reliable insights.
+- **Enhanced Trading Strategies**: Accurate forecasts enable the development of more effective trading strategies, potentially increasing profitability.
+- **Decision-Making**: Real-time insights streamline decision-making, allowing traders to capitalize on opportunities and mitigate risks promptly.
 
-```py
-import numpy as np
-import pandas as pd
-from sklearn.metrics import mean_squared_error
-import os
-import math
-from keras.models import Sequential
-from keras.layers import LSTM
-from keras.layers import Dense
-import matplotlib.pyplot as plt
-dataset = pd.read_csv('NIFTY 50_with_indicators_.csv', low_memory=False)
-dataset.head()
+### Articles Published / References
+[1] Shen, J., Shafiq, M.O. Short-term stock market price trend prediction using a comprehensive deep learning system. J Big Data 7, 66 (2020).
 
-import pandas as pd
-import plotly.graph_objects as go
+[2] Weng B, Lu L, Wang X, Megahed FM, Martinez W. Predicting short-term stock prices using ensemble methods and online data sources. Expert Syst Appl. 2018;112:258–73.
 
-fig = go.Figure(data=[go.Candlestick(x=dataset['date'][:10],
-                open=dataset['open'][:100],
-                high=dataset['high'][:100],
-                low=dataset['low'][:100],
-                close=dataset['close'][:100])])
+[3] Pang X, Zhou Y, Wang P, Lin W, Chang V. An innovative neural network approach for stock market prediction. J Supercomput. 2018. https://doi.org/10.1007/s11227-017-2228-y.
 
-fig.show()
+[4] Wang X, Lin W. Stock market prediction using neural networks: does trading volume help in short-term prediction.
 
-from sklearn.model_selection import train_test_split
-train, test = train_test_split(dataset, test_size=0.2, shuffle = False)
+[5] Mokhtari, Sohrab & Yen, Kang & Liu, Jin. (2021). Effectiveness of Artificial Intelligence in Stock Market Prediction based on Machine Learning. International Journal of Computer Applications. 183. 1-8.
 
-def standardize(data, mean=1, std=1):
-    standardized_data = list()
-    data = list(data)
-    for x in data:
-        standardized_data.append((x-mean)/std)
-    return standardized_data
+[6] Mehar Vijh, Deeksha Chandola, Vinay Anand Tikkiwal, Arun Kumar, Stock Closing Price Prediction using Machine Learning Techniques, Procedia Computer Science, Volume 167, 2020, Pages 599-606, ISSN 1877-0509.
 
-def standardize_inverse(data, mean=1, std=1):
-    reverse_data = list()
-    data = list(data)
-    for y in data:
-        reverse_data.append((y*std)+mean)
-    return reverse_data
+[7] Murkute, Amod, and Tanuja Sarode. "Forecasting market price of stock using artificial neural network." International Journal of Computer Applications 124.12 (2015): 11-15.
 
-all_columns = list(dataset.columns[1:])
-means, standard_devs = [], []
-
-for i in range(len(all_columns)):
-    column_name = all_columns[i]
-    means.append(np.mean(train[column_name].values))
-    standard_devs.append(np.std(train[column_name].values))
-
-df_train2 = pd.DataFrame(columns = all_columns)
-df_test2 = pd.DataFrame(columns= all_columns)
-
-for i in range(len(all_columns)):
-    column_name = all_columns[i]
-    df_train2[column_name] = standardize(train[column_name].values, means[i], standard_devs[i])
-
-for i in range(len(all_columns)):
-    column_name = all_columns[i]
-    df_test2[column_name] = standardize(test[column_name].values, means[i], standard_devs[i])
-
-from pandas import concat
-def series_to_supervised(data, n_in=1, n_out=1, dropnan=True):
-    n_vars = 1 if type(data) is list else data.shape[1]
-    df = pd.DataFrame(data)
-    cols, names = list(), list()
-    # input sequence (t-n, ... t-1)
-    for i in range(n_in, 0, -1):
-        cols.append(df.shift(i))
-        names += [('var%d(t-%d)' % (j+1, i)) for j in range(n_vars)]
-    # forecast sequence (t, t+1, ... t+n)
-    for i in range(0, n_out):
-        cols.append(df.shift(-i))
-        if i == 0:
-            names += [('var%d(t)' % (j+1)) for j in range(n_vars)]
-        else:
-            names += [('var%d(t+%d)' % (j+1, i)) for j in range(n_vars)]
-    # put it all together
-    agg = concat(cols, axis=1)
-    agg.columns = names
-    # drop rows with NaN values
-    if dropnan:
-        agg.dropna(inplace=True)
-    return agg
-
-data_train = train_reframed.values
-data_test = test_reframed.values
-trainX, trainy = data_train[:, :n_features*look_back], data_train[:, -1]
-testX, testy = data_test[:, :n_features*look_back], data_test[:, -1]
-trainX = trainX.reshape(trainX.shape[0], look_back, n_features)
-testX = testX.reshape(testX.shape[0], look_back, n_features)
-print('Shape of Training Data: ', trainX.shape, trainy.shape)
-print('Shape of Test Data: ', testX.shape, testy.shape)
-
-trainX = trainX.reshape(trainX.shape[0], look_back, n_features)
-testX = testX.reshape(testX.shape[0], look_back, n_features)
-
-print('Shape of Training Data: ', trainX.shape, trainy.shape)
-print('Shape of Test Data: ', testX.shape, testy.shape)
-
-np.random.seed(7)
-model = Sequential()
-model.add(LSTM(512, input_shape = (trainX.shape[1], trainX.shape[2]), return_sequences=True, activation='relu'))
-model.add(LSTM(512, return_sequences=True, activation='relu'))
-model.add(LSTM(512, return_sequences=False, activation='relu'))
-model.add(Dense(1, activation='linear'))
-model.compile(loss="mean_squared_error", optimizer="adam")
-model.summary()
-
-history = model.fit(trainX, trainy, epochs = 50, batch_size = 256, verbose = 1, shuffle=False,
-                     validation_split=0.1)
-
-model.save("/content/drive/MyDrive/majorproject2model.h5")
-
-# summarize history for loss
-plt.plot(history.history['loss'])
-plt.plot(history.history['val_loss'])
-plt.title('model loss')
-plt.ylabel('loss')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
-plt.show()
-testPredict = model.predict(testX)
-
-testPredict2 = standardize_inverse(testPredict, means[-1], standard_devs[-1])
-testy2 = standardize_inverse(testy, means[-1], standard_devs[-1])
-
-testScore = math.sqrt(mean_squared_error(testy2, testPredict2))
-print('Test Score: %.2f RMSE' % (testScore))
-
-plt.clf()
-plt.figure(figsize=(16, 8))
-plt.rcParams.update({'font.size': 16})
-plt.plot(actual[:], label = 'Actual')
-plt.plot(predicted[:], '--',label = 'Predicted')
-plt.title('LSTM model Nifty Price Forecast in 5mins')
-plt.ylabel('Close Price [in Rupees]')
-plt.xlabel('Time Steps [5 - minutes]')
-plt.legend()
-plt.show()
-
-```
-
-
-## OUTPUT:
-
-![image](https://github.com/curiouzs/major_project2_nifty/assets/75234646/93fd85c3-0dfa-4da8-b127-2e2ccc67f1f7)
-
-![image](https://github.com/curiouzs/major_project2_nifty/assets/75234646/08cd4dfe-7dc6-45ba-940b-a74b58865a7d)
-
-![image](https://github.com/curiouzs/major_project2_nifty/assets/75234646/38758da6-f085-4b0c-97d8-9f7a5bcfac8a)
+[8] Khan, Zabir & Alin, Tasnim & Hussain, Md. Akter. (2011). Price Prediction of Share Market Using Artificial Neural Network 'ANN'. International Journal of Computer Applications. 22. 42–47. 10.5120/2552-3497. 
